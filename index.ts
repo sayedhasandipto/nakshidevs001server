@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import adminRoutes from './routes/admin';
 import ordersRoutes from './routes/orders';
+import servicesRoutes from './routes/services';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ if (mongoURI) {
 // Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api/orders', ordersRoutes);
+app.use('/api/services', servicesRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Welcome to GovService BD Backend API');
