@@ -17,12 +17,15 @@ const mongoURI = process.env.MONGODB_URI;
 if (mongoURI) {
     mongoose.connect(mongoURI)
         .then(() => console.log('MongoDB connected successfully'))
-        .catch((err: Error) => console.error('MongoDB connection error:', err));
-} else {
+        .catch((err: Error) => console.error('MongoDB connection error:', err));} else {
     console.warn('MONGODB_URI is not defined in environment variables');
 }
+import adminRoutes from './routes/admin';
+import ordersRoutes from './routes/orders';
 
 // Routes
+app.use('/api/admin', adminRoutes);
+app.use('/api/orders', ordersRoutes);
 app.get('/', (req: Request, res: Response) => {
     res.send('Welcome to GovService BD Backend API');
 });
