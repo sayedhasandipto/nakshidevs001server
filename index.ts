@@ -2,6 +2,8 @@ import dotenv from 'dotenv';
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import adminRoutes from './routes/admin';
+import ordersRoutes from './routes/orders';
 
 dotenv.config();
 
@@ -17,23 +19,17 @@ const mongoURI = process.env.MONGODB_URI;
 if (mongoURI) {
     mongoose.connect(mongoURI)
         .then(() => console.log('MongoDB connected successfully'))
-        .catch((err: Error) => console.error('MongoDB connection error:', err));} else {
+        .catch((err: Error) => console.error('MongoDB connection error:', err));
+} else {
     console.warn('MONGODB_URI is not defined in environment variables');
 }
-import adminRoutes from './routes/admin';
-import ordersRoutes from './routes/orders';
 
 // Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api/orders', ordersRoutes);
+
 app.get('/', (req: Request, res: Response) => {
     res.send('Welcome to GovService BD Backend API');
-});
-
-// Example CRUD Route for Services
-app.get('/api/services', async (req: Request, res: Response) => {
-    // In a real app, you would fetch this from the database
-    res.json({ message: 'Services endpoint', data: [] });
 });
 
 // For Vercel Serverless Functions, we need to export the Express app
