@@ -15,7 +15,7 @@ router.get('/stats', async (req: Request, res: Response) => {
     const totalUsers = db ? await db.collection('user').countDocuments() : 0;
     const activeServices = await Service.countDocuments({ status: 'Active' });
     const totalOrders = await Order.countDocuments();
-    
+
     // Calculate total revenue dynamically
     const orders = await Order.find();
     let totalRevenue = 0;
@@ -44,10 +44,9 @@ router.get('/stats', async (req: Request, res: Response) => {
 router.get('/revenue-chart', async (req: Request, res: Response) => {
   try {
     const orders = await Order.find().sort({ orderDate: 1 });
-    
+
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const chartData = [];
-    
+    const chartData: { name: string; revenue: number; orders: number }[] = [];
     // Initialize last 6 months
     for (let i = 5; i >= 0; i--) {
       const d = new Date();
@@ -63,7 +62,7 @@ router.get('/revenue-chart', async (req: Request, res: Response) => {
       const monthName = months[date.getMonth()];
       const year = date.getFullYear();
       const label = `${monthName} ${year}`;
-      
+
       const parsedAmount = parseInt(order.amount.replace(/[^\d]/g, ''), 10);
       const amountVal = isNaN(parsedAmount) ? 0 : parsedAmount;
 
@@ -90,7 +89,7 @@ router.get('/users', async (req: Request, res: Response) => {
     }
     // better-auth stores users in the 'user' collection (singular)
     const users = await db.collection('user').find().sort({ createdAt: -1 }).toArray();
-    
+
     // Map better-auth fields to our expected format
     const mapped = users.map((u: any) => ({
       _id: u._id.toString(),
@@ -171,7 +170,7 @@ router.put('/services/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const updatedService = await Service.findByIdAndUpdate(id, req.body, { new: true });
-    
+
     if (!updatedService) {
       return res.status(404).json({ success: false, error: 'Service not found' });
     }
@@ -189,7 +188,7 @@ router.delete('/services/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const deletedService = await Service.findByIdAndDelete(id);
-    
+
     if (!deletedService) {
       return res.status(404).json({ success: false, error: 'Service not found' });
     }
